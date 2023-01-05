@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layouts/application.html}">
+
+<section layout:fragment="content">
+  <!-- добавление th:object="${url}" внутрь идентификатора объекта -->
+  <!-- позволяет переопредять значение -->
+  <div class="container-lg mt-5" th:object="${url}">
+    <h1 th:text="'Site: https://' + *{name}"></h1>
+
+    <table class="table table-bordered table-hover mt-3">
+      <tbody>
+      <tr>
+        <td>ID</td>
+        <td th:text="*{id}"></td>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td th:text="*{name}"></td>
+      </tr>
+      <tr>
+        <td>Date of creation</td>
+        <td th:text="*{createdAt}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+<!--    <h2 class="mt-5">Проверки</h2>-->
+<!--    <form method="post" action="/urls/1/checks">-->
+<!--      <button type="submit" class="btn btn-primary">Запустить проверку</button>-->
+<!--    </form>-->
+
+<!--    <table class="table table-bordered table-hover mt-3">-->
+<!--      <thead>-->
+<!--      <tr><th class="col-1">ID</th>-->
+<!--        <th class="col-1">Код ответа</th>-->
+<!--        <th>title</th>-->
+<!--        <th>h1</th>-->
+<!--        <th>description</th>-->
+<!--        <th class="col-2">Дата проверки</th>-->
+<!--      </tr></thead>-->
+<!--      <tbody>-->
+
+      </tbody>
+    </table>
+  </div>
+</section>

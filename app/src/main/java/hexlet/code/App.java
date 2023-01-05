@@ -1,21 +1,25 @@
 package hexlet.code;
 
-import hexlet.code.controllers.RootController;
+import hexlet.code.controllers.UrlController;
 import io.javalin.Javalin;
 
 
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
-import static io.javalin.apibuilder.ApiBuilder.get;
 
 public class App {
+    private static final Logger log = LoggerFactory.getLogger(App.class);
+
     private static int getPort() {
         String port = System.getenv().getOrDefault("PORT", "5000");
+        log.info("Get port: {}", port);
         return Integer.valueOf(port);
     }
 
@@ -25,28 +29,18 @@ public class App {
     }
 
     public static Javalin getApp() {
-
-//        Javalin app = Javalin.create(/*config*/)
-//                .get("/", ctx -> ctx.result("Hello World"))
-//                .start(7070);
-
-//        Javalin app = Javalin.create(config -> {
-////            JavalinThymeleaf.init();
-//            config.plugins.enableDevLogging();
-//
-//            JavalinThymeleaf.init(getTemplateEngine());
-//            //config.plugins.register(new DevLoggingPlugin());
-//        });
-
         Javalin app = Javalin.create(config -> {
             // Включаем логгирование
             config.enableDevLogging();
             // config.enableWebjars();
             // Подключаем настроенный шаблонизатор к фреймворку
             JavalinThymeleaf.configure(getTemplateEngine());
+            log.info("JavalinThymeleaf configured.");
         });
+        log.info("Javalin app created.");
 
         addRoutes(app);
+        log.info("Javalin routes created.");
 
         app.before(ctx -> ctx.attribute("ctx", ctx));
 
@@ -73,15 +67,15 @@ public class App {
     }
 
     private static void addRoutes(Javalin app) {
-        app.get("/", RootController.welcome);
+        app.get("/", UrlController.newUrl);
 
-//        app.routes(() -> {
-//            path("users", () -> {
-//                get(UserController.listUsers);
-//                post(UserController.createUser);
-//                get("new", UserController.newUser);
-//                get("{id}", UserController.showUser);
-//            });
-//        });
+        app.routes(() -> {
+            path("urls", () -> {
+                get(UrlController.listUrls);
+                post(UrlController.createUrl);
+//                get("new", UrlController.newUser);
+                get("{id}", UrlController.showUrl);
+            });
+        });
     }
 }
