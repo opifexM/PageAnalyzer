@@ -3,6 +3,7 @@ plugins {
     id 'jacoco'
     id 'application'
     id 'io.ebean' version '12.16.1'
+//    id 'checkstyle'
 }
 
 group 'hexlet.code'
