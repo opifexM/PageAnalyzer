@@ -9,7 +9,8 @@ datasource:
   production:
     username: ${PGUSER}
     password: ${PGPASSWORD}
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+#    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+    url: "jdbc:postgresql://containers-us-west-116.railway.app:6124/railway"
 
 # Заполняем базу данных первоначальными данными
 ebean:
