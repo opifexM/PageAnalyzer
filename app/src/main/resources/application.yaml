@@ -7,11 +7,11 @@ datasource:
     password: ""
     url: "jdbc:h2:./database"
   production:
-#    username: ${PGUSER}
+    #    username: ${PGUSER}
     username: "postgres"
-#    password: ${PGPASSWORD}
+    #    password: ${PGPASSWORD}
     password: "X6I7PUMjtkBVqoWpgLzV"
-#    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+    #    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
     url: "jdbc:postgresql://containers-us-west-116.railway.app:6124/railway"
 
 # Заполняем базу данных первоначальными данными
