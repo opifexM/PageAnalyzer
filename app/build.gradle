@@ -54,8 +54,13 @@ dependencies {
     // оформления страниц веб-приложения
     implementation 'org.webjars:bootstrap:5.1.1'
 
+    // библиотеки для тестирования веб
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
+    testImplementation 'org.assertj:assertj-core:3.23.1'
+    testImplementation 'io.ebean:ebean-test:12.11.5'
+    testImplementation 'com.konghq:unirest-java:3.14.1'
 }
 
 test {
