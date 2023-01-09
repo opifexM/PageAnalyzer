@@ -17,8 +17,27 @@
         <td>
           <a th:text="*{name}" th:href="@{/urls/{id}(id=*{id})}"></a>
         </td>
-        <td th:text="*{createdAt}"></td>
-        <td th:text="*{createdAt}"></td>
+
+        <!-- Получаем данные из объекта url и метода getLastCreatedAt()  -->
+        <td th:text="${#temporals.format(url.getLastCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
+
+        <!-- Получаем данные из перечисления url и метода getLastStatusCode()  -->
+        <td th:text="*{getLastStatusCode()}"></td>
       </tr>
   </table>
+
+  <!-- постраничный вывод -->
+  <nav aria-label="Page navigation" th:if="${#lists.size(pages)}">
+    <ul class="pagination justify-content-center mt-5">
+      <li th:class="'page-item' + ${currentPage <= 1 ? ' disabled' : ''}">
+        <a class="page-link" th:href="@{/urls(page=${currentPage - 1})}">Previous</a>
+      </li>
+      <li th:each="page : ${pages}" th:class="'page-item' + ${currentPage == page ? ' active' : ''}">
+        <a class="page-link" th:href="@{/urls(page=${page})}" th:text="${page}"></a>
+      </li>
+      <li th:class="'page-item' + ${currentPage >= #lists.size(pages) ? ' disabled' : ''}">
+        <a class="page-link" th:href="@{/urls(page=${currentPage + 1})}">Next</a>
+      </li>
+    </ul>
+  </nav>
 </section>

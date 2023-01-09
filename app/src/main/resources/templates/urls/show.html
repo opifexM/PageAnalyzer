@@ -1,47 +1,57 @@
 <!DOCTYPE html>
-<!--<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
-<!--layout:decorate="~{layouts/application.html}">-->
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/application.html}">
 
 <section layout:fragment="content">
-  <!-- добавление th:object="${url}" внутрь идентификатора объекта -->
-  <!-- позволяет переопредять значение -->
-  <div class="container-lg mt-5" th:object="${url}">
-    <h1 th:text="'Site: https://' + *{name}"></h1>
+    <!-- добавление th:object="${url}" внутрь идентификатора объекта -->
+    <!-- позволяет переопредять значение -->
+    <div class="container-lg mt-5" th:object="${url}">
+        <h1 th:text="'Site: ' + *{name}"></h1>
 
-    <table class="table table-bordered table-hover mt-3">
-      <tbody>
-      <tr>
-        <td>ID</td>
-        <td th:text="*{id}"></td>
-      </tr>
-      <tr>
-        <td>Name</td>
-        <td th:text="*{name}"></td>
-      </tr>
-      <tr>
-        <td>Date of creation</td>
-        <td th:text="*{createdAt}"></td>
-      </tr>
-      </tbody>
-    </table>
+        <table class="table table-bordered table-hover mt-3">
+            <tbody>
+            <tr>
+                <td>ID</td>
+                <td th:text="*{id}"></td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td th:text="*{name}"></td>
+            </tr>
+            <tr>
+                <td>Date of creation</td>
+                <td th:text="${#temporals.format(url.getCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
+            </tr>
+            </tbody>
+        </table>
 
-<!--    <h2 class="mt-5">Проверки</h2>-->
-<!--    <form method="post" action="/urls/1/checks">-->
-<!--      <button type="submit" class="btn btn-primary">Запустить проверку</button>-->
-<!--    </form>-->
 
-<!--    <table class="table table-bordered table-hover mt-3">-->
-<!--      <thead>-->
-<!--      <tr><th class="col-1">ID</th>-->
-<!--        <th class="col-1">Код ответа</th>-->
-<!--        <th>title</th>-->
-<!--        <th>h1</th>-->
-<!--        <th>description</th>-->
-<!--        <th class="col-2">Дата проверки</th>-->
-<!--      </tr></thead>-->
-<!--      <tbody>-->
+        <h2 class="mt-5">Checks</h2>
+        <form method="post" th:action="@{/urls/{id}/checks(id=*{getId()})}">
+            <button type="submit" class="btn btn-primary">Start checking</button>
+        </form>
 
-      </tbody>
-    </table>
-  </div>
+        <table class="table table-bordered table-hover mt-3">
+            <thead>
+            <tr>
+                <th class="col-1">ID</th>
+                <th class="col-1">Code</th>
+                <th>Title</th>
+                <th>H1</th>
+                <th>Description</th>
+                <th class="col-2">Last Check</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="urlCheck : ${urlChecks}" th:object="${urlCheck}">
+                <td th:text="*{getId()}"></td>
+                <td th:text="*{getStatusCode()}"></td>
+                <td th:text="${urlCheck.getTitle()}"></td>
+                <td th:text="${urlCheck.getH1()}"></td>
+                <td th:text="${urlCheck.getDescription()}"></td>
+                <td th:text="${#temporals.format(urlCheck.getCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </section>

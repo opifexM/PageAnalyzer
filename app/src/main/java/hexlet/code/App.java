@@ -67,14 +67,27 @@ public class App {
     }
 
     private static void addRoutes(Javalin app) {
-        app.get("/", UrlController.newUrl);
 
+        // GET: /
+        app.get("/", UrlController.newUrl);
         app.routes(() -> {
+            // path: /urls
             path("urls", () -> {
+                // GET: /urls
                 get(UrlController.listUrls);
+
+                // POST: /urls
                 post(UrlController.createUrl);
-//                get("new", UrlController.newUser);
-                get("{id}", UrlController.showUrl);
+
+                // path: /urls/{id}
+                path("{id}", () -> {
+
+                    // GET: /urls/{id}
+                    get(UrlController.showUrl);
+
+                    // POST: /urls/{id}/checks
+                    post("checks", UrlController.checkUrl);
+                });
             });
         });
     }
