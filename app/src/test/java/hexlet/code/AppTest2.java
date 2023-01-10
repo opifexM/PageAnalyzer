@@ -21,7 +21,7 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AppTest {
+class AppTest2 {
     public static final String MSG_SITE_ADDED_SUCCESSFULLY = "Site added successfully";
     public static final String MSG_INVALID_URL = "Invalid URL";
     public static final String MSG_SITE_ALREADY_EXISTS = "The site already exists";
