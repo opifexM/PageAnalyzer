@@ -90,7 +90,11 @@ public final class UrlController {
         }
 
         LOG.info("Get pages Urls from DB.");
-        PagedList<Url> pagedUrls = new QUrl().setFirstRow(page * URLS_PER_PAGE).setMaxRows(URLS_PER_PAGE).orderBy().id.asc().findPagedList();
+        PagedList<Url> pagedUrls = new QUrl()
+                .setFirstRow(page * URLS_PER_PAGE)
+                .setMaxRows(URLS_PER_PAGE)
+                .orderBy().id.asc()
+                .findPagedList();
 
         List<Url> urls = pagedUrls.getList();
 
@@ -138,9 +142,12 @@ public final class UrlController {
 
             int statusCode = response.getStatus();
             String title = siteBody.title();
-            String h1 = siteBody.selectFirst("h1") != null ? Objects.requireNonNull(siteBody.selectFirst("h1")).text() : "";
+            String h1 = siteBody.selectFirst("h1") != null
+                    ? Objects.requireNonNull(siteBody.selectFirst("h1")).text() : "";
 
-            String description = siteBody.selectFirst("meta[name=description]") != null ? Objects.requireNonNull(siteBody.selectFirst("meta[name=description]")).attr("content") : "";
+            String description = siteBody.selectFirst("meta[name=description]") != null
+                    ? Objects.requireNonNull(siteBody.selectFirst("meta[name=description]"))
+                    .attr("content") : "";
 
             LOG.info("Create Url Check '{}'.", url);
             UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, url);
