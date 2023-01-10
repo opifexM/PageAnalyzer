@@ -75,7 +75,7 @@ jar {
     from { (configurations.runtimeClasspath).collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-tasks.register('generateMigrations') {
+task generateMigrations(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'hexlet.code.MigrationGenerator' as Property<String>
+    mainClass = 'hexlet.code.MigrationGenerator'
 }
