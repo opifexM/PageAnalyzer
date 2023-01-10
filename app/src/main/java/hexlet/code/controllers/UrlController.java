@@ -144,13 +144,18 @@ public final class UrlController {
 
             log.info("Parsing page '{}' information", url);
             String responseBody = response.getBody();
+            // Выполните парсинг полученной html строки с помощью Jsoup.
             Document siteBody = Jsoup.parse(responseBody, "UTF-8");
 
             int statusCode = response.getStatus();
+            // Проверьте наличие тега <title> на странице. Если он есть, то запишите его содержимое в базу.
             String title = siteBody.title();
+            // Проверьте наличие тега <h1> на странице. Если он есть, то запишите его содержимое в базу.
             String h1 = siteBody.selectFirst("h1") != null
                     ? Objects.requireNonNull(siteBody.selectFirst("h1")).text() : "";
 
+            // Проверьте наличие тега <meta name="description" content="..."> на странице.
+            // Если он есть то запишите содержимое аттрибута content в базу.
             String description = siteBody.selectFirst("meta[name=description]") != null
                     ? Objects.requireNonNull(siteBody.selectFirst("meta[name=description]"))
                     .attr("content") : "";
