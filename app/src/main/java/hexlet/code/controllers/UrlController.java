@@ -5,8 +5,11 @@ import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
 import io.ebean.PagedList;
 import io.javalin.http.Handler;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
-import org.eclipse.jetty.util.ajax.JSON;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,30 +19,29 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import static java.util.Objects.isNull;
 
 
 public final class UrlController {
-    private static final Logger log = LoggerFactory.getLogger(UrlController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UrlController.class);
 
-    public static Handler newUrl = ctx -> {
-        log.info("Main page loading.");
+    public static final Handler NEW_URL = ctx -> {
+        LOG.info("Main page loading.");
         ctx.render("urls/new.html");
     };
 
-    public static Handler createUrl = ctx -> {
+    public static final String FLASH = "flash";
+    public static final String INVALID_URL = "Invalid URL";
+    public static final String SITE_ADDED_SUCCESSFULLY = "Site added successfully";
+    public static final String THE_SITE_ALREADY_EXISTS = "The site already exists";
+    public static final Handler CREATE_URL = ctx -> {
         URL inputUrl;
         try {
             inputUrl = new URL(ctx.formParam("url"));
-            log.info("Url '{}' input.", inputUrl);
+            LOG.info("Url '{}' input.", inputUrl);
         } catch (MalformedURLException e) {
-            log.error("Input Url is invalid.");
-            ctx.sessionAttribute("flash", "Invalid URL");
+            LOG.error("Input Url is invalid.");
+            ctx.sessionAttribute(FLASH, INVALID_URL);
             ctx.redirect("/");
             return;
         }
@@ -54,30 +56,30 @@ public final class UrlController {
             siteName = protocol + "://" + host;
         }
 
-        log.info("Checking Url '{}'", siteName);
+        LOG.info("Checking Url '{}'", siteName);
         Url checkUrl = new QUrl().name.equalTo(siteName).findOne();
         if (!isNull(checkUrl)) {
-            log.error("Input Url '{}' already exists.", siteName);
-            ctx.sessionAttribute("flash", "The site already exists");
-            log.info("Redirect to '/'");
+            LOG.error("Input Url '{}' already exists.", siteName);
+            ctx.sessionAttribute(FLASH, THE_SITE_ALREADY_EXISTS);
+            LOG.info("Redirect to '/'");
             ctx.redirect("/");
             return;
         }
 
-        log.info("Create Url '{}'.", siteName);
+        LOG.info("Create Url '{}'.", siteName);
         Url siteUrl = new Url(siteName);
-        log.info("Save Url object '{}' to DB", siteUrl);
+        LOG.info("Save Url object '{}' to DB", siteUrl);
         siteUrl.save();
-        log.info("Url object '{}' saved.", siteUrl);
+        LOG.info("Url object '{}' saved.", siteUrl);
 
-        ctx.sessionAttribute("flash", "Site added successfully");
-        log.info("Redirect to '/urls'");
+        ctx.sessionAttribute(FLASH, SITE_ADDED_SUCCESSFULLY);
+        LOG.info("Redirect to '/urls'");
         ctx.redirect("/urls");
     };
 
     public static final int URLS_PER_PAGE = 10;
-    public static Handler listUrls = ctx -> {
-        log.info("Get list of urls fro DB.");
+    public static final Handler LIST_URLS = ctx -> {
+        LOG.info("Get list of urls fro DB.");
 
         // TODO: PAGE
         int page;
@@ -87,99 +89,78 @@ public final class UrlController {
             page = 0;
         }
 
-        log.info("Get pages Urls from DB.");
-        PagedList<Url> pagedUrls = new QUrl()
-                // Устанавливаем смещение
-                .setFirstRow(page * URLS_PER_PAGE)
-                // Устанавливаем максимальное количество записей в результате
-                .setMaxRows(URLS_PER_PAGE)
-                // Задаём сортировку по id
-                .orderBy().id.asc()
-                // Получаем список PagedList, который представляет одну страницу результата
-                .findPagedList();
+        LOG.info("Get pages Urls from DB.");
+        PagedList<Url> pagedUrls = new QUrl().setFirstRow(page * URLS_PER_PAGE).setMaxRows(URLS_PER_PAGE).orderBy().id.asc().findPagedList();
 
-        // Получаем список url
         List<Url> urls = pagedUrls.getList();
 
-        log.info("Set pages Urls.");
+        LOG.info("Set pages Urls.");
         int lastPage = pagedUrls.getTotalPageCount() + 1;
         int currentPage = pagedUrls.getPageIndex() + 1;
 
-        List<Integer> pages = IntStream
-                .range(1, lastPage)
-                .boxed()
-                .toList();
+        List<Integer> pages = IntStream.range(1, lastPage).boxed().toList();
 
         ctx.attribute("urls", urls);
         ctx.attribute("pages", pages);
         ctx.attribute("currentPage", currentPage);
-        log.info("Render 'urls/list.html'");
+        LOG.info("Render 'urls/list.html'");
         ctx.render("urls/list.html");
     };
 
-    public static Handler showUrl = ctx -> {
+    public static final Handler SHOW_URL = ctx -> {
         long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(null);
 
-        log.info("Get one url from DB by id '{}'", id);
+        LOG.info("Get one url from DB by id '{}'", id);
         Url url = new QUrl().id.equalTo(id).findOne();
         List<UrlCheck> urlChecks = url.getUrlChecks();
 
         ctx.attribute("url", url);
         ctx.attribute("urlChecks", urlChecks);
-        log.info("Render 'urls/show.html'");
+        LOG.info("Render 'urls/show.html'");
         ctx.render("urls/show.html");
     };
 
-    public static Handler checkUrl = ctx -> {
+    public static final String SITE_CHECKED_SUCCESSFULLY = "Site checked successfully";
+    public static final String URL_CANNOT_BE_VERIFIED = "Url cannot be verified.";
+    public static final Handler CHECK_URL = ctx -> {
         long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(null);
 
-        log.info("Get one url from DB by id '{}'", id);
+        LOG.info("Get one url from DB by id '{}'", id);
         Url url = new QUrl().id.equalTo(id).findOne();
 
         try {
-            log.info("Collect url '{}' information", url);
-            HttpResponse<String> response = Unirest
-                    .get(url.getName())
-                    .asString();
+            LOG.info("Collect url '{}' information", url);
+            HttpResponse<String> response = Unirest.get(url.getName()).asString();
 
-            log.info("Parsing page '{}' information", url);
+            LOG.info("Parsing page '{}' information", url);
             String responseBody = response.getBody();
-            // Выполните парсинг полученной html строки с помощью Jsoup.
             Document siteBody = Jsoup.parse(responseBody, "UTF-8");
 
             int statusCode = response.getStatus();
-            // Проверьте наличие тега <title> на странице. Если он есть, то запишите его содержимое в базу.
             String title = siteBody.title();
-            // Проверьте наличие тега <h1> на странице. Если он есть, то запишите его содержимое в базу.
-            String h1 = siteBody.selectFirst("h1") != null
-                    ? Objects.requireNonNull(siteBody.selectFirst("h1")).text() : "";
+            String h1 = siteBody.selectFirst("h1") != null ? Objects.requireNonNull(siteBody.selectFirst("h1")).text() : "";
 
-            // Проверьте наличие тега <meta name="description" content="..."> на странице.
-            // Если он есть то запишите содержимое аттрибута content в базу.
-            String description = siteBody.selectFirst("meta[name=description]") != null
-                    ? Objects.requireNonNull(siteBody.selectFirst("meta[name=description]"))
-                    .attr("content") : "";
+            String description = siteBody.selectFirst("meta[name=description]") != null ? Objects.requireNonNull(siteBody.selectFirst("meta[name=description]")).attr("content") : "";
 
-            log.info("Create Url Check '{}'.", url);
+            LOG.info("Create Url Check '{}'.", url);
             UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, url);
-            log.info("Save Url Check object '{}' to DB", urlCheck);
+            LOG.info("Save Url Check object '{}' to DB", urlCheck);
             urlCheck.save();
-            log.info("Url Check object '{}' saved.", urlCheck);
+            LOG.info("Url Check object '{}' saved.", urlCheck);
         } catch (UnirestException e) {
-            log.error("Url '{}' cannot be verified.", url);
-            ctx.sessionAttribute("flash", "Url cannot be verified.");
-            log.info("Redirect to '/urls/'");
+            LOG.error("Url '{}' cannot be verified.", url);
+            ctx.sessionAttribute(FLASH, URL_CANNOT_BE_VERIFIED);
+            LOG.info("Redirect to '/urls/'");
             ctx.redirect("/urls/" + id);
             return;
         }
 
-        assert url != null;
         List<UrlCheck> urlChecks = url.getUrlChecks();
 
-        ctx.sessionAttribute("flash", "Site checked successfully");
+        ctx.sessionAttribute(FLASH, SITE_CHECKED_SUCCESSFULLY);
         ctx.attribute("url", url);
         ctx.attribute("urlChecks", urlChecks);
-        log.info("Render 'urls/show.html'");
+        LOG.info("Render 'urls/show.html'");
         ctx.render("urls/show.html");
 
     };

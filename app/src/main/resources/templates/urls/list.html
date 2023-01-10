@@ -6,10 +6,12 @@
   <h1>Sites</h1>
   <table class="table">
     <thead>
+    <tr>
       <th>ID</th>
       <th>Site</th>
       <th>Last Check</th>
       <th>Code</th>
+    </tr>
     </thead>
     <tbody>
       <tr th:each="url : ${urls}" th:object="${url}">
@@ -18,15 +20,12 @@
           <a th:text="*{name}" th:href="@{/urls/{id}(id=*{id})}"></a>
         </td>
 
-        <!-- Получаем данные из объекта url и метода getLastCreatedAt()  -->
         <td th:text="${#temporals.format(url.getLastCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
 
-        <!-- Получаем данные из перечисления url и метода getLastStatusCode()  -->
         <td th:text="*{getLastStatusCode()}"></td>
       </tr>
   </table>
 
-  <!-- постраничный вывод -->
   <nav aria-label="Page navigation" th:if="${#lists.size(pages)}">
     <ul class="pagination justify-content-center mt-5">
       <li th:class="'page-item' + ${currentPage <= 1 ? ' disabled' : ''}">

@@ -77,13 +77,6 @@
         <property name="message" value="Line has trailing spaces."/>
     </module>
 
-    <!-- Checks for Headers                                -->
-    <!-- See https://checkstyle.org/config_header.html   -->
-    <!-- <module name="Header"> -->
-    <!--   <property name="headerFile" value="${checkstyle.header.file}"/> -->
-    <!--   <property name="fileExtensions" value="java"/> -->
-    <!-- </module> -->
-
     <module name="TreeWalker">
 
         <!-- Checks for Javadoc comments.                     -->
@@ -91,9 +84,7 @@
         <module name="InvalidJavadocPosition"/>
         <module name="JavadocMethod"/>
         <module name="JavadocType"/>
-        <!-- <module name="JavadocVariable"/> -->
         <module name="JavadocStyle"/>
-        <!-- <module name="MissingJavadocMethod"/> -->
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See https://checkstyle.org/config_naming.html -->
@@ -151,10 +142,8 @@
         <!-- See https://checkstyle.org/config_coding.html -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
-        <!-- <module name="HiddenField"/> -->
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <!-- <module name="MagicNumber"/> -->
         <module name="MissingSwitchDefault"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="SimplifyBooleanExpression"/>
@@ -164,7 +153,6 @@
         <!-- See https://checkstyle.org/config_design.html -->
         <module name="DesignForExtension"/>
         <module name="FinalClass"/>
-        <!-- <module name="HideUtilityClassConstructor"/> -->
         <module name="InterfaceIsType"/>
         <!-- <module name = "VisibilityModifier">
           <property name="protectedAllowed" value="true" />
@@ -173,8 +161,6 @@
         <!-- Miscellaneous other checks.                   -->
         <!-- See https://checkstyle.org/config_misc.html -->
         <module name="ArrayTypeStyle"/>
-        <!-- <module name="FinalParameters"/> -->
-        <!-- <module name="TodoComment"/> -->
         <module name="UpperEll"/>
 
         <module name="Indentation">

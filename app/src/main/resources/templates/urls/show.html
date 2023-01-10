@@ -3,8 +3,6 @@
       layout:decorate="~{layouts/application.html}">
 
 <section layout:fragment="content">
-    <!-- добавление th:object="${url}" внутрь идентификатора объекта -->
-    <!-- позволяет переопредять значение -->
     <div class="container-lg mt-5" th:object="${url}">
         <h1 th:text="'Site: ' + *{name}"></h1>
 

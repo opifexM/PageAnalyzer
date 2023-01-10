@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'application'
     id 'io.ebean' version '12.16.1'
-//    id 'checkstyle'
+    id 'checkstyle'
 }
 
 group 'hexlet.code'
@@ -14,7 +14,7 @@ repositories {
 }
 
 compileJava {
-    options.release = 17
+    options.release = 17 as Property<Integer>
     options.encoding = 'UTF-8'
 }
 
@@ -24,19 +24,13 @@ application {
 
 dependencies {
 
-    // Библиотеки javalin (только версия 4.х.х)
     implementation 'io.javalin:javalin:4.6.7'
     implementation 'org.slf4j:slf4j-simple:2.0.5'
 
-    // Библиотеки thymeleaf (только версия 3.0.х)
     implementation 'org.thymeleaf:thymeleaf:3.0.15.RELEASE'
-    // позволяет создавать общие макеты и переиспользовать их
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
-    // добавляет в шаблоны объект temporals со множеством полезных методов по форматированию
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
 
-
-    // ORM ebean
     implementation 'io.ebean:ebean:12.16.1'
     implementation 'io.ebean:ebean-querybean:12.16.1'
     implementation 'io.ebean:ebean-migration:12.16.1'
@@ -44,19 +38,14 @@ dependencies {
     implementation 'io.ebean:ebean-ddl-generator:12.16.1'
     implementation 'org.jsoup:jsoup:1.15.3'
     annotationProcessor 'io.ebean:querybean-generator:12.16.1'
-    // NOTE: ebean-ddl-generator требует старые зависимости, которых нет в java 9 и выше
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.5'
     implementation 'javax.activation:activation:1.1.1'
 
-    // БД типа postgresql
     implementation 'org.postgresql:postgresql:42.5.1'
-    // БД типа H2
     implementation 'com.h2database:h2:2.1.214'
 
-    // оформления страниц веб-приложения
     implementation 'org.webjars:bootstrap:5.1.1'
 
-    // библиотеки для тестирования веб
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
@@ -86,7 +75,7 @@ jar {
     from { (configurations.runtimeClasspath).collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-task generateMigrations(type: JavaExec) {
+tasks.register('generateMigrations') {
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'hexlet.code.MigrationGenerator'
+    mainClass = 'hexlet.code.MigrationGenerator' as Property<String>
 }
