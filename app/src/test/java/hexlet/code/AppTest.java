@@ -196,7 +196,7 @@ class AppTest {
 
         assertThat(response.getStatus()).isEqualTo(302);
 
-        response =Unirest
+        response = Unirest
                 .post(baseUrl + "/urls/6/checks")
                 .field("id", "6")
                 .asString();
