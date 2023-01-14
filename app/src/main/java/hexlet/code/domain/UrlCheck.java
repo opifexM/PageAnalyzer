@@ -19,7 +19,8 @@ public class UrlCheck extends Model {
     private String title;
     private String h1;
 
-    @Lob
+    //TODO
+//    @Lob
     private String description;
 
     @ManyToOne

@@ -2,6 +2,7 @@ package hexlet.code;
 
 import hexlet.code.domain.Url;
 import hexlet.code.domain.query.QUrl;
+import hexlet.code.util.Text;
 import io.ebean.DB;
 import io.ebean.Transaction;
 import io.javalin.Javalin;
@@ -10,11 +11,7 @@ import kong.unirest.Unirest;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,9 +19,6 @@ import java.nio.file.Paths;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AppTest2 {
-    public static final String MSG_SITE_ADDED_SUCCESSFULLY = "Site added successfully";
-    public static final String MSG_INVALID_URL = "Invalid URL";
-    public static final String MSG_SITE_ALREADY_EXISTS = "The site already exists";
     private static Javalin app;
     private static String baseUrl;
     private static Transaction transaction;
@@ -103,7 +97,7 @@ class AppTest2 {
                 .get(baseUrl + "/urls")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(MSG_SITE_ADDED_SUCCESSFULLY);
+        assertThat(content).contains(Text.SITE_ADDED_SUCCESSFULLY);
 
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(content).contains(fullUrl);
@@ -123,7 +117,7 @@ class AppTest2 {
                 .get(baseUrl + "/")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(MSG_INVALID_URL);
+        assertThat(content).contains(Text.INVALID_URL);
     }
 
     @Test
@@ -140,7 +134,7 @@ class AppTest2 {
                 .get(baseUrl + "/")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(MSG_INVALID_URL);
+        assertThat(content).contains(Text.INVALID_URL);
     }
 
     @Test
@@ -157,7 +151,7 @@ class AppTest2 {
                 .get(baseUrl + "/")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(MSG_INVALID_URL);
+        assertThat(content).contains(Text.INVALID_URL);
     }
 
     @Test
@@ -174,7 +168,7 @@ class AppTest2 {
                 .get(baseUrl + "/")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(MSG_SITE_ALREADY_EXISTS);
+        assertThat(content).contains(Text.THE_SITE_ALREADY_EXISTS);
     }
 
     @Test
