@@ -24,3 +24,4 @@ target/
 /app/build/
 /app/out/
 *.db
+/app/src/main/generated/

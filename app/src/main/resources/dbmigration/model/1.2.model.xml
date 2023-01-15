@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <alterColumn columnName="description" tableName="url_check" type="varchar" currentType="clob" currentNotnull="false"/>
+    </changeSet>
+</migration>
