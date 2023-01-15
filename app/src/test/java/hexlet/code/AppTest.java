@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AppTest2 {
+class AppTest {
     private static Javalin app;
     private static String baseUrl;
     private static Transaction transaction;

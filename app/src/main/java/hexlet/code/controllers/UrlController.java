@@ -86,6 +86,7 @@ public final class UrlController {
         int page;
         try {
             page = ctx.pathParamAsClass(Key.PAGE, Integer.class).getOrDefault(0);
+            page = ctx.queryParamAsClass("page", Integer.class).getOrDefault(1) - 1;
         } catch (IllegalArgumentException e) {
             page = 0;
         }
