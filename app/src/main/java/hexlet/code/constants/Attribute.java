@@ -1,9 +1,9 @@
-package hexlet.code.util;
+package hexlet.code.constants;
 
-public final class Key {
+public final class Attribute {
     public static final String URL_CHECKS = "urlChecks";
 
-    private Key() {
+    private Attribute() {
     }
 
     public static final String CURRENT_PAGE = "currentPage";

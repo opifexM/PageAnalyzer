@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'application'
     id 'io.ebean' version '12.16.1'
-//    id 'checkstyle'
+    id 'checkstyle'
 }
 
 group 'hexlet.code'
@@ -65,6 +65,11 @@ jacocoTestReport {
     }
 }
 
+checkstyle {
+    toolVersion '10.0'
+}
+checkstyleMain.source = "src/main/java"
+
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
@@ -79,3 +84,4 @@ task generateMigrations(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'hexlet.code.MigrationGenerator'
 }
+

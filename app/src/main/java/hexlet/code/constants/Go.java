@@ -1,4 +1,4 @@
-package hexlet.code.util;
+package hexlet.code.constants;
 
 public final class Go {
     private Go() {
