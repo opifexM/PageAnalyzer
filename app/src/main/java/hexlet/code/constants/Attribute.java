@@ -7,7 +7,7 @@ public final class Attribute {
     }
 
     public static final String CURRENT_PAGE = "currentPage";
-    public static final String FLASH = "flash";
+    public static final String FLASH_MESSAGE = "flash";
     public static final String ID = "id";
     public static final String PAGE = "page";
     public static final String PAGES = "pages";

@@ -1,11 +1,12 @@
 package hexlet.code.controllers;
 
+import hexlet.code.constants.Config;
 import hexlet.code.domain.Url;
 import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
-import hexlet.code.constants.Go;
+import hexlet.code.constants.Link;
 import hexlet.code.constants.Attribute;
-import hexlet.code.constants.Text;
+import hexlet.code.constants.Message;
 import io.ebean.PagedList;
 import io.javalin.http.Handler;
 import kong.unirest.HttpResponse;
@@ -31,12 +32,9 @@ public final class UrlController {
     private UrlController() {
     }
 
-    // TODO constant for conf
-    public static final int URLS_PER_PAGE = 10;
     public static final Handler NEW_URL = ctx -> {
         LOG.info("Main page loading.");
-        // TODO: constants
-        ctx.render(Go.LOCATION_NEW_WEBSITE_HTML);
+        ctx.render(Link.NEW_SITE_HTML);
     };
 
     public static final Handler CREATE_URL = ctx -> {
@@ -46,8 +44,8 @@ public final class UrlController {
             LOG.info("Url '{}' input.", inputUrl);
         } catch (MalformedURLException e) {
             LOG.error("Input Url is invalid.");
-            ctx.sessionAttribute(Attribute.FLASH, Text.INVALID_URL);
-            ctx.redirect(Go.LOCATION_MAIN_PAGE);
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.INVALID_URL);
+            ctx.redirect(Link.MAIN_PAGE);
             return;
         }
 
@@ -65,9 +63,9 @@ public final class UrlController {
         Url checkUrl = new QUrl().name.equalTo(siteName).findOne();
         if (!isNull(checkUrl)) {
             LOG.error("Input Url '{}' already exists.", siteName);
-            ctx.sessionAttribute(Attribute.FLASH, Text.THE_SITE_ALREADY_EXISTS);
-            LOG.info("Redirect to: {}", Go.LOCATION_MAIN_PAGE);
-            ctx.redirect(Go.LOCATION_MAIN_PAGE);
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.SITE_ALREADY_EXISTS);
+            LOG.info("Redirect to: {}", Link.MAIN_PAGE);
+            ctx.redirect(Link.MAIN_PAGE);
             return;
         }
 
@@ -77,9 +75,9 @@ public final class UrlController {
         siteUrl.save();
         LOG.info("Url object '{}' saved.", siteUrl);
 
-        ctx.sessionAttribute(Attribute.FLASH, Text.SITE_ADDED_SUCCESSFULLY);
-        LOG.info("Redirect to: {}", Go.LOCATION_LIST_OF_SITES);
-        ctx.redirect(Go.LOCATION_LIST_OF_SITES);
+        ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.SITE_ADDED_SUCCESSFULLY);
+        LOG.info("Redirect to: {}", Link.LIST_OF_SITES);
+        ctx.redirect(Link.LIST_OF_SITES);
     };
 
     public static final Handler LIST_URLS = ctx -> {
@@ -95,8 +93,8 @@ public final class UrlController {
 
         LOG.info("Get pages Urls from DB.");
         PagedList<Url> pagedUrls = new QUrl()
-                .setFirstRow(page * URLS_PER_PAGE)
-                .setMaxRows(URLS_PER_PAGE)
+                .setFirstRow(page * Config.URLS_PER_PAGE)
+                .setMaxRows(Config.URLS_PER_PAGE)
                 .orderBy().id.asc()
                 .findPagedList();
 
@@ -111,8 +109,8 @@ public final class UrlController {
         ctx.attribute(Attribute.URLS, urls);
         ctx.attribute(Attribute.PAGES, pages);
         ctx.attribute(Attribute.CURRENT_PAGE, currentPage);
-        LOG.info("Render {}", Go.LOCATION_LIST_OF_SITES_HTML);
-        ctx.render(Go.LOCATION_LIST_OF_SITES_HTML);
+        LOG.info("Render {}", Link.LIST_OF_SITES_HTML);
+        ctx.render(Link.LIST_OF_SITES_HTML);
     };
 
     public static final Handler SHOW_URL = ctx -> {
@@ -120,12 +118,12 @@ public final class UrlController {
 
         LOG.info("Get one url from DB by id '{}'", id);
         Url url = new QUrl().id.equalTo(id).findOne();
-        List<UrlCheck> urlChecks = url.getUrlChecks();
+        List<UrlCheck> urlChecks = Objects.requireNonNull(url).getUrlChecks();
 
         ctx.attribute(Attribute.URL, url);
         ctx.attribute(Attribute.URL_CHECKS, urlChecks);
-        LOG.info("Render {}", Go.LOCATION_SHOW_SITE_HTML);
-        ctx.render(Go.LOCATION_SHOW_SITE_HTML);
+        LOG.info("Render {}", Link.SHOW_SITE_HTML);
+        ctx.render(Link.SHOW_SITE_HTML);
     };
 
     public static final Handler CHECK_URL = ctx -> {
@@ -136,7 +134,7 @@ public final class UrlController {
 
         try {
             LOG.info("Collect url '{}' information", url);
-            HttpResponse<String> response = Unirest.get(url.getName()).asString();
+            HttpResponse<String> response = Unirest.get(Objects.requireNonNull(url).getName()).asString();
 
             LOG.info("Parsing page '{}' information", url);
             String responseBody = response.getBody();
@@ -158,14 +156,14 @@ public final class UrlController {
             LOG.info("Url Check object '{}' saved.", urlCheck);
         } catch (UnirestException e) {
             LOG.error("Url '{}' cannot be verified.", url);
-            ctx.sessionAttribute(Attribute.FLASH, Text.URL_CANNOT_BE_VERIFIED);
-            LOG.info("Redirect to: {}/{}", Go.LOCATION_LIST_OF_SITES, id);
-            ctx.redirect(Go.LOCATION_LIST_OF_SITES + "/" + id);
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.URL_CANNOT_BE_VERIFIED);
+            LOG.info("Redirect to: {}/{}", Link.LIST_OF_SITES, id);
+            ctx.redirect(Link.LIST_OF_SITES + "/" + id);
             return;
         }
 
-        ctx.sessionAttribute(Attribute.FLASH, Text.SITE_CHECKED_SUCCESSFULLY);
-        LOG.info("Redirect to: {}/{}", Go.LOCATION_LIST_OF_SITES, id);
-        ctx.redirect(Go.LOCATION_LIST_OF_SITES + "/" + id);
+        ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.SITE_CHECKED_SUCCESSFULLY);
+        LOG.info("Redirect to: {}/{}", Link.LIST_OF_SITES, id);
+        ctx.redirect(Link.LIST_OF_SITES + "/" + id);
     };
 }

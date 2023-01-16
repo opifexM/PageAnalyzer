@@ -2,7 +2,7 @@ package hexlet.code;
 
 import hexlet.code.domain.Url;
 import hexlet.code.domain.query.QUrl;
-import hexlet.code.constants.Text;
+import hexlet.code.constants.Message;
 import io.ebean.DB;
 import io.ebean.Transaction;
 import io.javalin.Javalin;
@@ -101,7 +101,7 @@ class AppTest {
                 .get(baseUrl + "/urls")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(Text.SITE_ADDED_SUCCESSFULLY);
+        assertThat(content).contains(Message.SITE_ADDED_SUCCESSFULLY);
 
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(content).contains(fullUrl);
@@ -121,7 +121,7 @@ class AppTest {
                 .get(baseUrl + "/")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(Text.INVALID_URL);
+        assertThat(content).contains(Message.INVALID_URL);
     }
 
     @Test
@@ -138,7 +138,7 @@ class AppTest {
                 .get(baseUrl + "/")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(Text.INVALID_URL);
+        assertThat(content).contains(Message.INVALID_URL);
     }
 
     @Test
@@ -155,7 +155,7 @@ class AppTest {
                 .get(baseUrl + "/")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(Text.INVALID_URL);
+        assertThat(content).contains(Message.INVALID_URL);
     }
 
     @Test
@@ -172,7 +172,7 @@ class AppTest {
                 .get(baseUrl + "/")
                 .asString();
         String content = response.getBody();
-        assertThat(content).contains(Text.THE_SITE_ALREADY_EXISTS);
+        assertThat(content).contains(Message.SITE_ALREADY_EXISTS);
     }
 
     @Test
