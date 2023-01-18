@@ -90,6 +90,7 @@ public final class UrlController {
         } catch (IllegalArgumentException e) {
             page = 0;
         }
+//        String tmp = ctx.pathParamAsClass("NON_EXIST", String.class).getOrDefault("");
 
         LOG.info("Get pages Urls from DB.");
         PagedList<Url> pagedUrls = new QUrl()

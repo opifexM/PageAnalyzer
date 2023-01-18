@@ -5,6 +5,7 @@ import io.ebean.annotation.WhenCreated;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import java.time.Instant;
 
@@ -18,8 +19,7 @@ public class UrlCheck extends Model {
     private String title;
     private String h1;
 
-    //TODO
-//    @Lob
+    @Lob
     private String description;
 
     @ManyToOne
