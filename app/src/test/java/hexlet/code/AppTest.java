@@ -68,6 +68,13 @@ class AppTest {
         assertThat(content).contains("www.rambler.com");
     }
 
+
+    @Test
+    void testCheckFalse() {
+        assertThat(false).isTrue();
+    }
+
+
     @Test
     void testUrl() {
         HttpResponse<String> response = Unirest
