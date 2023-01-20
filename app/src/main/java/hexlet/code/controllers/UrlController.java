@@ -8,6 +8,7 @@ import hexlet.code.constants.Link;
 import hexlet.code.constants.Attribute;
 import hexlet.code.constants.Message;
 import io.ebean.PagedList;
+import io.javalin.core.validation.ValidationException;
 import io.javalin.http.Handler;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -83,14 +84,8 @@ public final class UrlController {
     public static final Handler LIST_URLS = ctx -> {
         LOG.info("Get list of urls fro DB.");
 
-        // TODO: PAGE
-        int page;
-        try {
-            page = ctx.pathParamAsClass(Attribute.PAGE, Integer.class).getOrDefault(0);
-        } catch (IllegalArgumentException e) {
-            page = 0;
-        }
-//        String tmp = ctx.pathParamAsClass("NON_EXIST", String.class).getOrDefault("");
+        // /urls?page=1
+        int page = ctx.queryParamAsClass(Attribute.PAGE, Integer.class).getOrDefault(1) - 1;
 
         LOG.info("Get pages Urls from DB.");
         PagedList<Url> pagedUrls = new QUrl()
@@ -115,7 +110,15 @@ public final class UrlController {
     };
 
     public static final Handler SHOW_URL = ctx -> {
-        long id = ctx.pathParamAsClass(Attribute.ID, Long.class).getOrDefault(null);
+        long id;
+        try {
+            id = ctx.pathParamAsClass(Attribute.ID, Long.class).getOrDefault(0L);
+        } catch (ValidationException e) {
+            LOG.error("Input Url is invalid.");
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.INVALID_URL);
+            ctx.redirect(Link.MAIN_PAGE);
+            return;
+        }
 
         LOG.info("Get one url from DB by id '{}'", id);
         Url url = new QUrl().id.equalTo(id).findOne();
@@ -128,7 +131,15 @@ public final class UrlController {
     };
 
     public static final Handler CHECK_URL = ctx -> {
-        long id = ctx.pathParamAsClass(Attribute.ID, Long.class).getOrDefault(null);
+        long id;
+        try {
+            id = ctx.pathParamAsClass(Attribute.ID, Long.class).getOrDefault(0L);
+        } catch (ValidationException e) {
+            LOG.error("Input Url is invalid.");
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.INVALID_URL);
+            ctx.redirect(Link.MAIN_PAGE);
+            return;
+        }
 
         LOG.info("Get one url from DB by id '{}'", id);
         Url url = new QUrl().id.equalTo(id).findOne();
