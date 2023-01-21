@@ -46,6 +46,7 @@ public final class UrlController {
         } catch (MalformedURLException e) {
             LOG.error("Input Url is invalid.");
             ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.INVALID_URL);
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE_TYPE, Attribute.ALERT_DANGER);
             ctx.redirect(Link.MAIN_PAGE);
             return;
         }
@@ -65,6 +66,7 @@ public final class UrlController {
         if (!isNull(checkUrl)) {
             LOG.error("Input Url '{}' already exists.", siteName);
             ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.SITE_ALREADY_EXISTS);
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE_TYPE, Attribute.ALERT_DANGER);
             LOG.info("Redirect to: {}", Link.MAIN_PAGE);
             ctx.redirect(Link.MAIN_PAGE);
             return;
@@ -77,6 +79,7 @@ public final class UrlController {
         LOG.info("Url object '{}' saved.", siteUrl);
 
         ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.SITE_ADDED_SUCCESSFULLY);
+        ctx.sessionAttribute(Attribute.FLASH_MESSAGE_TYPE, Attribute.ALERT_SUCCESS);
         LOG.info("Redirect to: {}", Link.LIST_OF_SITES);
         ctx.redirect(Link.LIST_OF_SITES);
     };
@@ -116,6 +119,7 @@ public final class UrlController {
         } catch (ValidationException e) {
             LOG.error("Input Url is invalid.");
             ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.INVALID_URL);
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE_TYPE, Attribute.ALERT_DANGER);
             ctx.redirect(Link.MAIN_PAGE);
             return;
         }
@@ -137,6 +141,7 @@ public final class UrlController {
         } catch (ValidationException e) {
             LOG.error("Input Url is invalid.");
             ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.INVALID_URL);
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE_TYPE, Attribute.ALERT_DANGER);
             ctx.redirect(Link.MAIN_PAGE);
             return;
         }
@@ -169,12 +174,14 @@ public final class UrlController {
         } catch (UnirestException e) {
             LOG.error("Url '{}' cannot be verified.", url);
             ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.URL_CANNOT_BE_VERIFIED);
+            ctx.sessionAttribute(Attribute.FLASH_MESSAGE_TYPE, Attribute.ALERT_DANGER);
             LOG.info("Redirect to: {}/{}", Link.LIST_OF_SITES, id);
             ctx.redirect(Link.LIST_OF_SITES + "/" + id);
             return;
         }
 
         ctx.sessionAttribute(Attribute.FLASH_MESSAGE, Message.SITE_CHECKED_SUCCESSFULLY);
+        ctx.sessionAttribute(Attribute.FLASH_MESSAGE_TYPE, Attribute.ALERT_SUCCESS);
         LOG.info("Redirect to: {}/{}", Link.LIST_OF_SITES, id);
         ctx.redirect(Link.LIST_OF_SITES + "/" + id);
     };

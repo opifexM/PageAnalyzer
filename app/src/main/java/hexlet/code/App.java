@@ -53,6 +53,7 @@ public class App {
         templateResolver.setPrefix("/templates/");
 
         templateEngine.addTemplateResolver(templateResolver);
+        templateResolver.setCharacterEncoding("UTF-8");
 
         return templateEngine;
     }
